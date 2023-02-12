@@ -23,7 +23,7 @@ def users():
     if request.method == 'GET':
         res=[]
         for usr in User.query.all():
-            res.append({"username":usr.username, "email":usr.email})
+            res.append({"username":usr.username, "email":usr.email,"id":usr.id})
         return jsonify(res)
     elif request.method == 'POST': #add row
         user_data = request.get_json()
@@ -39,12 +39,13 @@ def user(user_id):
         return jsonify({'error': 'User not found'}), 404
 
     if request.method == 'GET':
-        return   {"username":user.username, "email":user.email}
+        return   {"username":user.username, "email":user.email,"id":user_id}
         # return jsonify(res)
         # return json.dumps(user.__dict__)
     elif request.method == 'PUT':
-        user.username = request.form['username']
-        user.email = request.form['email']
+        user_data = request.get_json()
+        user.username = user_data['username']
+        user.email = user_data['email']
         db.session.commit()
         return jsonify({'id': user.id})
     elif request.method == 'DELETE':
